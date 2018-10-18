@@ -11,7 +11,26 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8b72b42-29fd-4d5e-bd41-86a6b12ce43d" name="Default" comment="" />
+    <list default="true" id="a8b72b42-29fd-4d5e-bd41-86a6b12ce43d" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/StereoMatching.h" afterPath="$PROJECT_DIR$/StereoMatching.h" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/StereoMatch.dir/CXX.includecache" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/StereoMatch.dir/CXX.includecache" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/StereoMatch.dir/depend.internal" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/StereoMatch.dir/depend.internal" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/StereoMatch.dir/depend.make" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/StereoMatch.dir/depend.make" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/StereoMatch.dir/main.cpp.o" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/StereoMatch" afterPath="$PROJECT_DIR$/cmake-build-debug/StereoMatch" />
+      <change beforePath="$PROJECT_DIR$/dataset/abs_disp.png" afterPath="$PROJECT_DIR$/dataset/abs_disp.png" />
+      <change beforePath="$PROJECT_DIR$/dataset/wwamp_angle_center_color44.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/dataset/wwamp_angle_center_color44teddy.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/dataset/wwamp_angle_center_color55.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/dataset/wwamp_center_color22.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/dataset/wwamp_center_color33.jpg" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/dataset/wwamp_center_color33.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/dataset/wwamp_center_color44.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/dataset/wwamp_center_color55.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/dataset/wwamp_center_color66.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" afterPath="$PROJECT_DIR$/main.cpp" />
+    </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -33,39 +52,54 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="StereoMatching.h" pinned="false" current-in-tab="false">
+      <file leaf-file-name="StereoMatching.h" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/StereoMatching.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="38" column="35" lean-forward="false" selection-start-line="38" selection-start-column="35" selection-end-line="38" selection-end-column="35" />
+            <state relative-caret-position="-1536">
+              <caret line="437" column="29" lean-forward="true" selection-start-line="437" selection-start-column="29" selection-end-line="437" selection-end-column="29" />
               <folding>
                 <element signature="e#13#30#0" expanded="true" />
                 <element signature="e#296#776#0" expanded="false" />
-                <element signature="e#2985#3983#0" expanded="false" />
-                <element signature="e#4587#4807#0" expanded="false" />
-                <element signature="e#7657#8680#0" expanded="false" />
-                <element signature="e#8711#13810#0" expanded="false" />
-                <element signature="e#13812#18282#0" expanded="false" />
+                <element signature="e#778#4128#0" expanded="false" />
+                <element signature="e#4130#13215#0" expanded="false" />
+                <element signature="e#4881#10013#0" expanded="false" />
+                <element signature="e#13839#17470#0" expanded="false" />
+                <element signature="e#22104#23127#0" expanded="false" />
+                <element signature="e#23133#27049#0" expanded="false" />
+                <element signature="e#27072#32392#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="72">
-              <caret line="117" column="0" lean-forward="true" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+            <state relative-caret-position="471">
+              <caret line="147" column="0" lean-forward="true" selection-start-line="147" selection-start-column="0" selection-end-line="147" selection-end-column="0" />
               <folding>
                 <element signature="e#0#16#0" expanded="true" />
-                <element signature="e#703#3114#0" expanded="false" />
-                <element signature="e#5246#8631#0" expanded="false" />
+                <element signature="e#516#2933#0" expanded="false" />
+                <element signature="e#2958#3131#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="imgcodecs.hpp" pinned="false" current-in-tab="false">
+        <entry file="file:///usr/local/include/opencv2/imgcodecs.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="4008">
+              <caret line="167" column="57" lean-forward="false" selection-start-line="167" selection-start-column="57" selection-end-line="167" selection-end-column="57" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -82,14 +116,15 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
-    <option name="x" value="239" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="220" />
     <option name="y" value="60" />
     <option name="width" value="1619" />
     <option name="height" value="1020" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
+    <navigator proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -102,19 +137,7 @@
       <manualOrder />
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="StereoMatch" type="dad4c3:CidrFilesViewHelper$MyProjectTreeStructure$1" />
-              <item name="StereoMatch" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -162,27 +185,31 @@
       <workItem from="1539238534783" duration="7791000" />
       <workItem from="1539248290005" duration="1680000" />
       <workItem from="1539304608501" duration="10418000" />
+      <workItem from="1539563743017" duration="23996000" />
+      <workItem from="1539649974033" duration="27278000" />
+      <workItem from="1539736650330" duration="28679000" />
+      <workItem from="1539823225444" duration="13192000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20583000" />
+    <option name="totallyTimeSpent" value="113728000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="239" y="60" width="1619" height="1020" extended-state="1" />
+    <frame x="220" y="60" width="1619" height="1020" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2130945" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2130945" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32897604" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32824427" sideWeight="0.49783817" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32897604" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32897604" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32824427" sideWeight="0.5021618" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32824427" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39978212" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40130863" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -202,35 +229,213 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>192</line>
+          <url>file://$PROJECT_DIR$/StereoMatching.h</url>
+          <line>946</line>
+          <option name="timeStamp" value="40" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/StereoMatching.h</url>
-          <line>204</line>
-          <option name="timeStamp" value="11" />
+          <line>862</line>
+          <option name="timeStamp" value="41" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/StereoMatching.h</url>
-          <line>92</line>
-          <option name="timeStamp" value="13" />
+          <line>365</line>
+          <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>132</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>129</line>
-          <option name="timeStamp" value="19" />
+          <url>file://$PROJECT_DIR$/StereoMatching.h</url>
+          <line>575</line>
+          <option name="timeStamp" value="70" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="20" />
+      <option name="time" value="71" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/include/opencv2/core/mat.inl.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="21192">
+          <caret line="883" column="0" lean-forward="false" selection-start-line="883" selection-start-column="0" selection-end-line="883" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3480">
+          <caret line="145" column="27" lean-forward="false" selection-start-line="145" selection-start-column="27" selection-end-line="145" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+            <element signature="e#516#2933#0" expanded="false" />
+            <element signature="e#2958#3131#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/include/opencv2/imgcodecs.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4008">
+          <caret line="167" column="57" lean-forward="false" selection-start-line="167" selection-start-column="57" selection-end-line="167" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StereoMatching.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15432">
+          <caret line="643" column="25" lean-forward="false" selection-start-line="643" selection-start-column="25" selection-end-line="643" selection-end-column="25" />
+          <folding>
+            <element signature="e#13#30#0" expanded="true" />
+            <element signature="e#296#776#0" expanded="false" />
+            <element signature="e#778#4128#0" expanded="false" />
+            <element signature="e#4130#13215#0" expanded="false" />
+            <element signature="e#4881#10013#0" expanded="false" />
+            <element signature="e#13839#17470#0" expanded="false" />
+            <element signature="e#22104#23127#0" expanded="false" />
+            <element signature="e#23133#27049#0" expanded="false" />
+            <element signature="e#27072#32392#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3264">
+          <caret line="136" column="22" lean-forward="false" selection-start-line="136" selection-start-column="22" selection-end-line="136" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+            <element signature="e#516#2933#0" expanded="false" />
+            <element signature="e#2958#3131#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StereoMatching.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18624">
+          <caret line="776" column="28" lean-forward="true" selection-start-line="776" selection-start-column="28" selection-end-line="776" selection-end-column="28" />
+          <folding>
+            <element signature="e#13#30#0" expanded="true" />
+            <element signature="e#296#776#0" expanded="false" />
+            <element signature="e#778#4128#0" expanded="false" />
+            <element signature="e#4130#13215#0" expanded="false" />
+            <element signature="e#4881#10013#0" expanded="false" />
+            <element signature="e#13839#17470#0" expanded="false" />
+            <element signature="e#22104#23127#0" expanded="false" />
+            <element signature="e#23133#27049#0" expanded="false" />
+            <element signature="e#27072#32392#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StereoMatching.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9504">
+          <caret line="396" column="54" lean-forward="true" selection-start-line="396" selection-start-column="54" selection-end-line="396" selection-end-column="54" />
+          <folding>
+            <element signature="e#13#30#0" expanded="true" />
+            <element signature="e#296#776#0" expanded="false" />
+            <element signature="e#778#4128#0" expanded="false" />
+            <element signature="e#4130#13215#0" expanded="false" />
+            <element signature="e#4881#10013#0" expanded="false" />
+            <element signature="e#13839#17470#0" expanded="false" />
+            <element signature="e#22104#23127#0" expanded="false" />
+            <element signature="e#23133#27049#0" expanded="false" />
+            <element signature="e#27072#32392#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/include/opencv2/highgui.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="13056">
+          <caret line="544" column="0" lean-forward="true" selection-start-line="544" selection-start-column="0" selection-end-line="544" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/include/opencv2/imgproc.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="41112">
+          <caret line="1713" column="28" lean-forward="false" selection-start-line="1713" selection-start-column="28" selection-end-line="1713" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2280">
+          <caret line="95" column="0" lean-forward="true" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+            <element signature="e#516#2933#0" expanded="false" />
+            <element signature="e#2958#3131#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StereoMatching.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="912">
+          <caret line="38" column="35" lean-forward="false" selection-start-line="38" selection-start-column="35" selection-end-line="38" selection-end-column="35" />
+          <folding>
+            <element signature="e#13#30#0" expanded="true" />
+            <element signature="e#296#776#0" expanded="false" />
+            <element signature="e#778#4128#0" expanded="false" />
+            <element signature="e#4130#13215#0" expanded="false" />
+            <element signature="e#4881#10013#0" expanded="false" />
+            <element signature="e#13839#17470#0" expanded="false" />
+            <element signature="e#22104#23127#0" expanded="false" />
+            <element signature="e#23133#27049#0" expanded="false" />
+            <element signature="e#27072#32392#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2808">
+          <caret line="117" column="0" lean-forward="true" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+            <element signature="e#516#2933#0" expanded="false" />
+            <element signature="e#2958#3131#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
@@ -246,11 +451,13 @@
           <folding>
             <element signature="e#13#30#0" expanded="true" />
             <element signature="e#296#776#0" expanded="false" />
-            <element signature="e#2985#3983#0" expanded="false" />
-            <element signature="e#4587#4807#0" expanded="false" />
-            <element signature="e#7657#8680#0" expanded="false" />
-            <element signature="e#8711#13810#0" expanded="false" />
-            <element signature="e#13812#18282#0" expanded="false" />
+            <element signature="e#778#4128#0" expanded="false" />
+            <element signature="e#4130#13215#0" expanded="false" />
+            <element signature="e#4881#10013#0" expanded="false" />
+            <element signature="e#13839#17470#0" expanded="false" />
+            <element signature="e#22104#23127#0" expanded="false" />
+            <element signature="e#23133#27049#0" expanded="false" />
+            <element signature="e#27072#32392#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -261,8 +468,8 @@
           <caret line="22" column="0" lean-forward="false" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#703#3114#0" expanded="false" />
-            <element signature="e#5246#8631#0" expanded="false" />
+            <element signature="e#516#2933#0" expanded="false" />
+            <element signature="e#2958#3131#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -281,8 +488,8 @@
           <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#703#3114#0" expanded="false" />
-            <element signature="e#5246#8631#0" expanded="false" />
+            <element signature="e#516#2933#0" expanded="false" />
+            <element signature="e#2958#3131#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -294,11 +501,13 @@
           <folding>
             <element signature="e#13#30#0" expanded="true" />
             <element signature="e#296#776#0" expanded="false" />
-            <element signature="e#2985#3983#0" expanded="false" />
-            <element signature="e#4587#4807#0" expanded="false" />
-            <element signature="e#7657#8680#0" expanded="false" />
-            <element signature="e#8711#13810#0" expanded="false" />
-            <element signature="e#13812#18282#0" expanded="false" />
+            <element signature="e#778#4128#0" expanded="false" />
+            <element signature="e#4130#13215#0" expanded="false" />
+            <element signature="e#4881#10013#0" expanded="false" />
+            <element signature="e#13839#17470#0" expanded="false" />
+            <element signature="e#22104#23127#0" expanded="false" />
+            <element signature="e#23133#27049#0" expanded="false" />
+            <element signature="e#27072#32392#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -317,8 +526,8 @@
           <caret line="93" column="5" lean-forward="true" selection-start-line="93" selection-start-column="5" selection-end-line="93" selection-end-column="5" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#703#3114#0" expanded="false" />
-            <element signature="e#5246#8631#0" expanded="false" />
+            <element signature="e#516#2933#0" expanded="false" />
+            <element signature="e#2958#3131#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -330,12 +539,21 @@
           <folding>
             <element signature="e#13#30#0" expanded="true" />
             <element signature="e#296#776#0" expanded="false" />
-            <element signature="e#2985#3983#0" expanded="false" />
-            <element signature="e#4587#4807#0" expanded="false" />
-            <element signature="e#7657#8680#0" expanded="false" />
-            <element signature="e#8711#13810#0" expanded="false" />
-            <element signature="e#13812#18282#0" expanded="false" />
+            <element signature="e#778#4128#0" expanded="false" />
+            <element signature="e#4130#13215#0" expanded="false" />
+            <element signature="e#4881#10013#0" expanded="false" />
+            <element signature="e#13839#17470#0" expanded="false" />
+            <element signature="e#22104#23127#0" expanded="false" />
+            <element signature="e#23133#27049#0" expanded="false" />
+            <element signature="e#27072#32392#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/include/opencv2/core.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="787" column="0" lean-forward="false" selection-start-line="787" selection-start-column="0" selection-end-line="787" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -347,38 +565,77 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/local/include/opencv2/core.hpp">
+    <entry file="file:///usr/local/include/opencv2/imgproc.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="787" column="0" lean-forward="false" selection-start-line="787" selection-start-column="0" selection-end-line="787" selection-end-column="0" />
+        <state relative-caret-position="223">
+          <caret line="1713" column="28" lean-forward="false" selection-start-line="1713" selection-start-column="28" selection-end-line="1713" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/include/opencv2/highgui.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="436">
+          <caret line="544" column="0" lean-forward="false" selection-start-line="544" selection-start-column="0" selection-end-line="544" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/include/opencv2/core/matx.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="420" column="15" lean-forward="true" selection-start-line="420" selection-start-column="15" selection-end-line="420" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/include/opencv2/core/hal/interface.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-66">
+          <caret line="49" column="17" lean-forward="true" selection-start-line="49" selection-start-column="17" selection-end-line="49" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/StereoMatching.h">
+    <entry file="file:///usr/local/include/opencv2/core/mat.inl.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="38" column="35" lean-forward="false" selection-start-line="38" selection-start-column="35" selection-end-line="38" selection-end-column="35" />
-          <folding>
-            <element signature="e#13#30#0" expanded="true" />
-            <element signature="e#296#776#0" expanded="false" />
-            <element signature="e#2985#3983#0" expanded="false" />
-            <element signature="e#4587#4807#0" expanded="false" />
-            <element signature="e#7657#8680#0" expanded="false" />
-            <element signature="e#8711#13810#0" expanded="false" />
-            <element signature="e#13812#18282#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="21192">
+          <caret line="883" column="0" lean-forward="false" selection-start-line="883" selection-start-column="0" selection-end-line="883" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/include/opencv2/imgcodecs.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4008">
+          <caret line="167" column="57" lean-forward="false" selection-start-line="167" selection-start-column="57" selection-end-line="167" selection-end-column="57" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="117" column="0" lean-forward="true" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+        <state relative-caret-position="471">
+          <caret line="147" column="0" lean-forward="true" selection-start-line="147" selection-start-column="0" selection-end-line="147" selection-end-column="0" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#703#3114#0" expanded="false" />
-            <element signature="e#5246#8631#0" expanded="false" />
+            <element signature="e#516#2933#0" expanded="false" />
+            <element signature="e#2958#3131#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StereoMatching.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1536">
+          <caret line="437" column="29" lean-forward="true" selection-start-line="437" selection-start-column="29" selection-end-line="437" selection-end-column="29" />
+          <folding>
+            <element signature="e#13#30#0" expanded="true" />
+            <element signature="e#296#776#0" expanded="false" />
+            <element signature="e#778#4128#0" expanded="false" />
+            <element signature="e#4130#13215#0" expanded="false" />
+            <element signature="e#4881#10013#0" expanded="false" />
+            <element signature="e#13839#17470#0" expanded="false" />
+            <element signature="e#22104#23127#0" expanded="false" />
+            <element signature="e#23133#27049#0" expanded="false" />
+            <element signature="e#27072#32392#0" expanded="false" />
           </folding>
         </state>
       </provider>

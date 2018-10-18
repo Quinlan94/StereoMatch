@@ -73,6 +73,7 @@ CMakeFiles/StereoMatch.dir/main.cpp.o: /usr/local/include/opencv2/flann/sampling
 CMakeFiles/StereoMatch.dir/main.cpp.o: /usr/local/include/opencv2/flann/saving.h
 CMakeFiles/StereoMatch.dir/main.cpp.o: /usr/local/include/opencv2/flann/timer.h
 CMakeFiles/StereoMatch.dir/main.cpp.o: /usr/local/include/opencv2/highgui.hpp
+CMakeFiles/StereoMatch.dir/main.cpp.o: /usr/local/include/opencv2/highgui/highgui.hpp
 CMakeFiles/StereoMatch.dir/main.cpp.o: /usr/local/include/opencv2/highgui/highgui_c.h
 CMakeFiles/StereoMatch.dir/main.cpp.o: /usr/local/include/opencv2/imgcodecs.hpp
 CMakeFiles/StereoMatch.dir/main.cpp.o: /usr/local/include/opencv2/imgcodecs/imgcodecs_c.h
