@@ -106,6 +106,7 @@ int  main()
          Mat left_temp = imread("/home/quinlan/桌面/MiddEval3/trainingQ/ArtL/im0.png");
          Mat right_temp = imread("/home/quinlan/桌面/MiddEval3/trainingQ/ArtL/im1.png");
 
+
     Mat left,right;
          GaussianBlur(left_temp,left,Size(3,3),0);
         GaussianBlur(right_temp,right,Size(3,3),0);

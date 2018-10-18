@@ -155,6 +155,25 @@ vector<Mat> getAmpAndAngle(Mat in1,int type)
 
 }
 
+bool best_to_bad_ordering(const pair<double,int> a, const pair<double,int> b)
+{
+    return a.first < b.first;
+}
+Mat CheckDepth(const Mat &depth_left,const Mat &depth_right)
+{
+    int width = depth_left.size().width;
+    int height = depth_left.size().height;
+    Mat depth_err(height, width, CV_8UC1,cv::Scalar::all(255));
+    for(int y = 0;y<height;y++)
+        for(int x=0;x<width;x++)
+        {
+            int offset_tmp = depth_left.at<uchar>(y,x);
+            if(fabs(depth_right.at<uchar>(y,x-offset_tmp)-offset_tmp) > 1)
+                depth_err.at<uchar>(y,x)=0;
+        }
+    return  depth_err;
+
+}
 Mat ncc_improve(Mat in1, Mat in2, string type, bool add_constant = false)
 {
     int width = in1.size().width;
@@ -441,18 +460,26 @@ Mat ASW(Mat in1, Mat in2, string type)
     double k=3,gamma_a = 0.12, gamma_c = 25, gamma_g = 36;
 
     Mat depth(height, width, CV_8UC1);
-    vector< vector<int> > min_ssd; // store min SSD values
+    Mat depth_right(height, width, CV_8UC1);
+    Mat depth_err(height, width, CV_8UC1);
+
+    vector< vector<double> > min_asw_left,min_asw_right;
     Mat left = bgr_to_grey(in1);
     Mat right = bgr_to_grey(in2);
+    vector< vector< vector< pair<double,int> > > > value_asw_left(
+            height,vector< vector< pair<double,int> > >(
+                    width));
 
-    vector<Mat> left_cost = getAmpAndAngle(left,0);
-    vector<Mat> right_cost = getAmpAndAngle(right,0);
+    vector<Mat> left_cost = getAmpAndAngle(in1,0);
+    vector<Mat> right_cost = getAmpAndAngle(in2,0);
 
 
     for (int i = 0; i < height; ++i)
     {
-        vector<int> tmp(width, numeric_limits<int>::max());
-        min_ssd.push_back(tmp);
+        vector<double> tmp(width, numeric_limits<double>::max());
+        min_asw_left.push_back(tmp);
+        min_asw_right.push_back(tmp);
+
     }
 
     /*for (int offset = 0; offset <= max_offset; offset++)
@@ -556,7 +583,7 @@ Mat ASW(Mat in1, Mat in2, string type)
                     if(x-offset<0)
                         continue;
                     float sum_e = 0;
-                    float E=0, center_color = 0;
+                    double E=0, center_color = 0;
                     double numerator = 0;
                     double denominator = 0;
 
@@ -570,22 +597,22 @@ Mat ASW(Mat in1, Mat in2, string type)
                             double delta_c1=0, delta_c2=0;
                             if(j<0||j>width||j-offset<0)
                                 continue;
-                            for (int c = 0; c < left.channels();++c)
+                            for (int c = 0; c < in1.channels();++c)
                             {
-                                delta_c1+= fabs(left.at<uchar>(i, j) - left.at<uchar>(y, x));
-                                delta_c2+= fabs(right.at<uchar>(i, j-offset) - right.at<uchar>(y, x-offset));//指针访问速度快一点
+                                delta_c1+= fabs(in1.at<Vec3b>(i, j)[c] - in1.at<Vec3b>(y, x)[c]);
+                                delta_c2+= fabs(in2.at<Vec3b>(i, j-offset)[c] - in2.at<Vec3b>(y, x-offset)[c]);//指针访问速度快一点
                             }
-                            delta_c1 = delta_c1 / left.channels();
-                            delta_c2 = delta_c2 / left.channels();
+                            delta_c1 = delta_c1 / in1.channels();
+                            delta_c2 = delta_c2 / in1.channels();
                             double delta_g = sqrt((i - y) * (i - y) + (j - x) * (j - x));
                             double w1 = k*exp(-(delta_c1 / gamma_c + delta_g / gamma_g));
                             double w2 = k*exp(-(delta_c2 / gamma_c + delta_g / gamma_g));
-                            for (int c = 0; c < left.channels(); ++c)
+                            for (int c = 0; c < in1.channels(); ++c)
                             {
-                                float angle = fabs(left_cost[1].at<float>(i, j) - right_cost[1].at<float>(i, j - offset));
+                                float angle = fabs(left_cost[1].at<Vec3f>(i, j)[c] - right_cost[1].at<Vec3f>(i, j - offset)[c]);
                                 if (!(angle >= 0 && angle <= 180))
                                     angle = 2 * 180 - angle;
-                                e += gamma_a* fabs(left_cost[0].at<float>(i, j) - right_cost[0].at<float>(i, j - offset))+angle ;
+                                e += gamma_a* fabs(left_cost[0].at<Vec3f>(i, j)[c] - right_cost[0].at<Vec3f>(i, j - offset)[c])+angle ;
 
                             }
                             sum_e += w1 * w2 * e;
@@ -601,38 +628,48 @@ Mat ASW(Mat in1, Mat in2, string type)
                         {
                             float e = 0;
                             double delta_c1=0, delta_c2=0;
-                            if(j<0||j>width)
+                            if(j<0||j>width||j-offset<0)
                                 continue;
-                            for (int c = 0; c < left.channels();++c)
+                            for (int c = 0; c < in1.channels();++c)
                             {
-                                delta_c1+= fabs(left.at<uchar>(i, j) - left.at<uchar>(y, x));
-                                delta_c2+= fabs(right.at<uchar>(i, j-offset) - right.at<uchar>(y, x-offset));//指针访问速度快一点
+                                delta_c1+= fabs(in1.at<Vec3b>(i, j)[c] - in1.at<Vec3b>(y, x)[c]);
+                                delta_c2+= fabs(in2.at<Vec3b>(i, j-offset)[c] - in2.at<Vec3b>(y, x-offset)[c]);//指针访问速度快一点
                             }
-                            delta_c1 = delta_c1 / left.channels();
-                            delta_c2 = delta_c2 / left.channels();
+                            delta_c1 = delta_c1 / in1.channels();
+                            delta_c2 = delta_c2 / in1.channels();
                             double delta_g = sqrt((i - y) * (i - y) + (j - x) * (j - x));
                             double w1 = k*exp(-(delta_c1 / gamma_c + delta_g / gamma_g));
                             double w2 = k*exp(-(delta_c2 / gamma_c + delta_g / gamma_g));
-                            for (int c = 0; c < left.channels(); ++c)
+                            for (int c = 0; c < in1.channels(); ++c)
                             {
-                                float angle = fabs(left_cost[1].at<float>(i, j) - right_cost[1].at<float>(i, j - offset));
+                                float angle = fabs(left_cost[1].at<Vec3f>(i, j)[c] - right_cost[1].at<Vec3f>(i, j - offset)[c]);
                                 if (!(angle >= 0 && angle <= 180))
                                     angle = 2 * 180 - angle;
-                                e += gamma_a* fabs(left_cost[0].at<float>(i, j) - right_cost[0].at<float>(i, j - offset))+angle ;
+                                e += gamma_a* fabs(left_cost[0].at<Vec3f>(i, j)[c] - right_cost[0].at<Vec3f>(i, j - offset)[c])+angle ;
 
                             }
                             sum_e += w1 * w2 * e;
                             denominator += w1 * w2;
 
+
                         }
                     }
 
-
                     E = sum_e/denominator;
-                    if (E < min_ssd[y][x])
+                    pair<double,int> offset_e ;
+                    offset_e = std::make_pair(E,offset);
+                    value_asw_left[y][x].push_back(offset_e);
+
+                    if(offset==max_offset)
+                        std::sort(value_asw_left[y][x].begin(),value_asw_left[y][x].end(),best_to_bad_ordering);
+
+                    if(y==177)
+                        int p =0;
+
+                    if (E < min_asw_left[y][x])
                     {
-                        min_ssd[y][x] = E;
-                        // for better visualization
+                        min_asw_left[y][x] = E;
+
                         depth.at<uchar>(y, x) = (uchar)(offset);
                     }
                 }
@@ -644,52 +681,10 @@ Mat ASW(Mat in1, Mat in2, string type)
     cout << "初步计算时间：" << (clock() - timest) / (double)CLOCKS_PER_SEC << endl;
 
 
-/*
-// calculate each pixel's SSD value
-		for (int y = 0; y < height; y++)//重复累赘计算？
-		{
-			for (int x = 0; x < width; x++)
-			{
-				int start_x = max(0, x - kernel_size);
-				int start_y = max(0, y - kernel_size);
-				int end_x = min(width - 1, x + kernel_size);
-				int end_y = min(height - 1, y + kernel_size);
-				int sum_sd = 0;
 
-				if (type == "left")
-				{
-					for (int i = start_y; i <= end_y; i++)
-					{
-						for (int j = start_x; j <= end_x; j++)
-						{
-							int delta = abs(left.at<uchar>(i, j) - tmp.at<uchar>(i, j));
-							sum_sd += delta * delta;
-						}
-					}
-				}
-				else
-				{
-					for (int i = start_y; i <= end_y; i++)
-					{
-						for (int j = start_x; j <= end_x; j++)
-						{
-							int delta = abs(right.at<uchar>(i, j) - tmp.at<uchar>(i, j));
-							sum_sd += delta * delta;
-						}
-					}
-				}
-
-				// smaller SSD value found
-				if (sum_sd < min_ssd[y][x])
-				{
-					min_ssd[y][x] = sum_sd;
-					// for better visualization
-					depth.at<uchar>(y, x) = (uchar)(offset);
-				}
-			}
-		}*/
-
-    /*for (int y = 0; y < height; y++)
+//一致性检测
+    clock_t timest_check = clock();
+    for (int y = 0; y < height; y++)
     {
 
         for (int x = 0; x < width; x++)
@@ -699,7 +694,11 @@ Mat ASW(Mat in1, Mat in2, string type)
             {
                 if(x-offset<0)
                     continue;
-                float sum_e = 0;
+                double sum_e = 0;
+
+                double E=0;
+
+                double denominator = 0;
 
 
                 for (int i = y-kernel_size; i <= y+ kernel_size; i+=2)
@@ -710,27 +709,28 @@ Mat ASW(Mat in1, Mat in2, string type)
                     {
                         float e = 0;
                         double delta_c1=0, delta_c2=0;
-                        if(j<0||j>width)
+                        if(j<0||j>width||j-offset<0)
                             continue;
-                        for (int c = 0; c < left.channels();++c)
+                        for (int c = 0; c < in1.channels();++c)
                         {
-                            delta_c1+= fabs(left.at<uchar>(i, j) - left.at<uchar>(y, x));
-                            delta_c2+= fabs(right.at<uchar>(i, j) - right.at<uchar>(y, x));//指针访问速度快一点
+                            delta_c1+= fabs(in2.at<Vec3b>(i, j)[c] - in2.at<Vec3b>(y, x)[c]);
+                            delta_c2+= fabs(in1.at<Vec3b>(i, j+offset)[c] - in1.at<Vec3b>(y, x+offset)[c]);//指针访问速度快一点
                         }
-                        delta_c1 = delta_c1 / left.channels();
-                        delta_c2 = delta_c2 / left.channels();
+                        delta_c1 = delta_c1 / in1.channels();
+                        delta_c2 = delta_c2 / in1.channels();
                         double delta_g = sqrt((i - y) * (i - y) + (j - x) * (j - x));
-                        double w1 = exp(-(delta_c1 / gamma_c + delta_g / gamma_g));
-                        double w2 = exp(-(delta_c2 / gamma_c + delta_g / gamma_g));
-                        for (int c = 0; c < left.channels(); ++c)
+                        double w1 = k*exp(-(delta_c1 / gamma_c + delta_g / gamma_g));
+                        double w2 = k*exp(-(delta_c2 / gamma_c + delta_g / gamma_g));
+                        for (int c = 0; c < in1.channels(); ++c)
                         {
-                            float angle = fabs(left_cost[1].at<float>(i, j) - right_cost[1].at<float>(i, j - offset));
+                            float angle = fabs(right_cost[1].at<Vec3f>(i, j)[c] - left_cost[1].at<Vec3f>(i, j +offset)[c]);
                             if (!(angle >= 0 && angle <= 180))
                                 angle = 2 * 180 - angle;
-                            e += gamma_a* fabs(left_cost[0].at<float>(i, j) - right_cost[0].at<float>(i, j - offset))+angle ;
+                            e += gamma_a* fabs(right_cost[0].at<Vec3f>(i, j)[c] - left_cost[0].at<Vec3f>(i, j + offset)[c])+angle ;
 
                         }
                         sum_e += w1 * w2 * e;
+                        denominator += w1 * w2;
 
                     }
                 }
@@ -742,43 +742,50 @@ Mat ASW(Mat in1, Mat in2, string type)
                     {
                         float e = 0;
                         double delta_c1=0, delta_c2=0;
-                        if(j<0||j>width)
+                        if(j<0||j>width||j-offset<0)
                             continue;
-                        for (int c = 0; c < left.channels();++c)
+                        for (int c = 0; c < in1.channels();++c)
                         {
-                            delta_c1+= fabs(left.at<uchar>(i, j) - left.at<uchar>(y, x));
-                            delta_c2+= fabs(right.at<uchar>(i, j) - right.at<uchar>(y, x));//指针访问速度快一点
+                            delta_c1+= fabs(in2.at<Vec3b>(i, j)[c] - in2.at<Vec3b>(y, x)[c]);
+                            delta_c2+= fabs(in1.at<Vec3b>(i, j+offset)[c] - in1.at<Vec3b>(y, x+offset)[c]);//指针访问速度快一点
                         }
-                        delta_c1 = delta_c1 / left.channels();
-                        delta_c2 = delta_c2 / left.channels();
+                        delta_c1 = delta_c1 / in1.channels();
+                        delta_c2 = delta_c2 / in1.channels();
                         double delta_g = sqrt((i - y) * (i - y) + (j - x) * (j - x));
-                        double w1 = exp(-(delta_c1 / gamma_c + delta_g / gamma_g));
-                        double w2 = exp(-(delta_c2 / gamma_c + delta_g / gamma_g));
-                        for (int c = 0; c < left.channels(); ++c)
+                        double w1 = k*exp(-(delta_c1 / gamma_c + delta_g / gamma_g));
+                        double w2 = k*exp(-(delta_c2 / gamma_c + delta_g / gamma_g));
+                        for (int c = 0; c < in1.channels(); ++c)
                         {
-                            float angle = fabs(left_cost[1].at<float>(i, j) - right_cost[1].at<float>(i, j - offset));
+                            float angle = fabs(right_cost[1].at<Vec3f>(i, j)[c] - left_cost[1].at<Vec3f>(i, j +offset)[c]);
                             if (!(angle >= 0 && angle <= 180))
                                 angle = 2 * 180 - angle;
-                            e += gamma_a* fabs(left_cost[0].at<float>(i, j) - right_cost[0].at<float>(i, j - offset))+angle ;
+                            e += gamma_a* fabs(right_cost[0].at<Vec3f>(i, j)[c] - left_cost[0].at<Vec3f>(i, j + offset)[c])+angle ;
 
                         }
                         sum_e += w1 * w2 * e;
+                        denominator += w1 * w2;
 
                     }
                 }
+                E = sum_e/denominator;
 
-
-                if (sum_e < min_ssd[y][x])
+                if (E < min_asw_right[y][x])
                 {
-                    min_ssd[y][x] = sum_e;
+                    min_asw_right[y][x] = E;
                     // for better visualization
-                    depth.at<uchar>(y, x) = (uchar)(offset);
+                    depth_right.at<uchar>(y, x) = (uchar)(offset);
                 }
             }
 
         }
 
-    }*/
+    }
+
+
+    depth_err = CheckDepth(depth,depth_right);
+    cout << "一致性检测计算时间：" << (clock() - timest_check) / (double)CLOCKS_PER_SEC << endl;
+
+    imwrite("/home/quinlan/Learn/StereoMatch/dataset/error_depth.png", depth_err);
 
     return depth;
 }
@@ -962,6 +969,7 @@ asw(Mat in1, Mat in2, string type)
 
     Mat depth(height, width, 0);
     vector< vector<double> > min_asw; // store min ASW value
+
 
     Mat left = bgr_to_grey(in1);
     Mat right = bgr_to_grey(in2);
