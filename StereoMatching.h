@@ -468,6 +468,8 @@ Mat ASW(Mat in1, Mat in2, string type)
     Mat right = bgr_to_grey(in2);
     vector< vector< vector< pair<double,int> > > > value_asw_left(
             height,vector< vector< pair<double,int> > >(
+                    width)),value_asw_right(
+            height,vector< vector< pair<double,int> > >(
                     width));
 
     vector<Mat> left_cost = getAmpAndAngle(in1,0);
@@ -578,12 +580,16 @@ Mat ASW(Mat in1, Mat in2, string type)
             for (int x = 0; x < width; x++)
             {
 
-                for (int offset = 1; offset <= max_offset; offset++)
+                for (int offset = 0; offset <= max_offset; offset++)
                 {
                     if(x-offset<0)
+                    {
                         continue;
+                    }
+
+
                     float sum_e = 0;
-                    double E=0, center_color = 0;
+                    double E=0;
                     double numerator = 0;
                     double denominator = 0;
 
@@ -660,18 +666,38 @@ Mat ASW(Mat in1, Mat in2, string type)
                     offset_e = std::make_pair(E,offset);
                     value_asw_left[y][x].push_back(offset_e);
 
-                    if(offset==max_offset)
+                    if(offset==max_offset||x-offset==0)
+                    {
                         std::sort(value_asw_left[y][x].begin(),value_asw_left[y][x].end(),best_to_bad_ordering);
 
-                    if(y==177)
-                        int p =0;
+                        depth.at<uchar>(y, x) = (uchar)(value_asw_left[y][x][0].second);
+                        for(int i=0;i<5&&i<=x;i++)
+                        {
+                            int offset_num =  value_asw_left[y][x][i].second;
+                            double sum=0;
+                            for (int c = 0; c < in1.channels(); ++c)
+                            {
+                                sum+=fabs(in1.at<Vec3b>(y, x)[c] - in2.at<Vec3b>(y, x-offset_num)[c]);
 
-                    if (E < min_asw_left[y][x])
+                            }
+                            if(sum/3 <= 30)
+                            {
+                                depth.at<uchar>(y, x) = (uchar)(offset_num);
+                                break;
+                            }
+
+                        }
+
+                    }
+
+
+
+                    /*if (E < min_asw_left[y][x])
                     {
                         min_asw_left[y][x] = E;
 
                         depth.at<uchar>(y, x) = (uchar)(offset);
-                    }
+                    }*/
                 }
 
             }
@@ -690,9 +716,9 @@ Mat ASW(Mat in1, Mat in2, string type)
         for (int x = 0; x < width; x++)
         {
 
-            for (int offset = 1; offset <= max_offset; offset++)
+            for (int offset = 0; offset <= max_offset; offset++)
             {
-                if(x-offset<0)
+                if(x+offset<0)
                     continue;
                 double sum_e = 0;
 
@@ -709,7 +735,7 @@ Mat ASW(Mat in1, Mat in2, string type)
                     {
                         float e = 0;
                         double delta_c1=0, delta_c2=0;
-                        if(j<0||j>width||j-offset<0)
+                        if(j<0||j>width||j+offset>width)
                             continue;
                         for (int c = 0; c < in1.channels();++c)
                         {
@@ -742,7 +768,7 @@ Mat ASW(Mat in1, Mat in2, string type)
                     {
                         float e = 0;
                         double delta_c1=0, delta_c2=0;
-                        if(j<0||j>width||j-offset<0)
+                        if(j<0||j>width||j+offset<width)
                             continue;
                         for (int c = 0; c < in1.channels();++c)
                         {
@@ -769,12 +795,39 @@ Mat ASW(Mat in1, Mat in2, string type)
                 }
                 E = sum_e/denominator;
 
-                if (E < min_asw_right[y][x])
+                pair<double,int> offset_e ;
+                offset_e = std::make_pair(E,offset);
+                value_asw_right[y][x].push_back(offset_e);
+                if(offset==max_offset||x==max_offset)
+                {
+                    std::sort(value_asw_right[y][x].begin(),value_asw_right[y][x].end(),best_to_bad_ordering);
+
+                    depth_right.at<uchar>(y, x) = (uchar)(value_asw_right[y][x][0].second);
+                    for(int i=0;i<5&&i<=x;i++)
+                    {
+                        int offset_num =  value_asw_right[y][x][i].second;
+                        double sum=0;
+                        for (int c = 0; c < in1.channels(); ++c)
+                        {
+                            sum+=fabs(in2.at<Vec3b>(y, x)[c] - in1.at<Vec3b>(y, x+offset_num)[c]);
+
+                        }
+                        if(sum/3 <= 30)
+                        {
+                            depth_right.at<uchar>(y, x) = (uchar)(offset_num);
+                            break;
+                        }
+
+                    }
+
+                }
+
+                /*if (E < min_asw_right[y][x])
                 {
                     min_asw_right[y][x] = E;
-                    // for better visualization
+
                     depth_right.at<uchar>(y, x) = (uchar)(offset);
-                }
+                }*/
             }
 
         }
