@@ -52,16 +52,12 @@ vector<Mat> getAmpAndAngle(Mat in1,int type)
        Amp_mat = Amp_mat_tmp;
        Angle_mat = Angle_mat_tmp;
 
-       for (int k = 0; k < height; ++k)
+       for (int k = 1; k < height; ++k)
        {
-           if (k < 1 || k > height - 1)
+
+           for (int l = 0; l < width-1; ++l)
            {
-               continue;
-           }
-           for (int l = 0; l < width; ++l)
-           {
-               if (l < 1 || l > width - 1)
-                   continue;
+
                for (int c = 0; c < in1.channels(); ++c)
                {
                    if(type==two_side)
@@ -81,17 +77,34 @@ vector<Mat> getAmpAndAngle(Mat in1,int type)
 
                        Amp_mat.at<Vec3f>(k,l)[c] = sqrt(g_x * g_x + g_y * g_y);
 
-
                        float angle = (atan2(g_y, g_x) * 180) / pi;
                        Angle_mat.at<Vec3f>(k,l)[c] = angle;
                    }
 
-
-
                }
+
            }
 
        }
+       for (int l = 0; l < width; ++l)
+       {
+           for (int c = 0; c < in1.channels(); ++c)
+           {
+               Amp_mat.at<Vec3f>(0,l)[c] = Amp_mat.at<Vec3f>(1,l)[c];
+               Angle_mat.at<Vec3f>(0,l)[c] = Angle_mat.at<Vec3f>(1,l)[c];
+           }
+       }
+       for (int k = 0; k < height; ++k)
+       {
+           for (int c = 0; c < in1.channels(); ++c)
+           {
+               Amp_mat.at<Vec3f>(k,width-1)[c] = Amp_mat.at<Vec3f>(k,width-2)[c];
+               Angle_mat.at<Vec3f>(k,width-1)[c] = Angle_mat.at<Vec3f>(k,width-2)[c];
+           }
+       }
+
+
+
    }
    else
    {
@@ -138,6 +151,17 @@ vector<Mat> getAmpAndAngle(Mat in1,int type)
 
                }
            }
+
+       }
+       for (int l = 0; l < width; ++l)
+       {
+               Amp_mat.at<float>(0,l)= Amp_mat.at<float>(1,l);
+               Angle_mat.at<float>(0,l) = Angle_mat.at<float>(1,l);
+       }
+       for (int k = 0; k < height; ++k)
+       {
+               Amp_mat.at<float>(k,width-1) = Amp_mat.at<float>(k,width-2);
+               Angle_mat.at<float>(k,width-1) = Angle_mat.at<float>(k,width-2);
 
        }
    }
@@ -454,7 +478,7 @@ Mat ncc_improve(Mat in1, Mat in2, string type, bool add_constant = false)
 
 Mat ASW(Mat in1, Mat in2, string type)
 {
-    clock_t timest = clock();
+
     int width = in1.size().width;
     int height = in1.size().height;
     double k=3,gamma_a = 0.12, gamma_c = 25, gamma_g = 36;
@@ -573,7 +597,7 @@ Mat ASW(Mat in1, Mat in2, string type)
     }
 */
 
-
+    clock_t timest = clock();
         for (int y = 0; y < height; y++)
         {
 
@@ -595,13 +619,13 @@ Mat ASW(Mat in1, Mat in2, string type)
 
                     for (int i = y-kernel_size; i <= y+ kernel_size; i+=2)
                     {
-                        if(i<0||i>height)
+                        if(i<0||i>height-1)
                             continue;
                         for (int j = x-kernel_size; j <= x+kernel_size; j+=2)
                         {
                             float e = 0;
                             double delta_c1=0, delta_c2=0;
-                            if(j<0||j>width||j-offset<0)
+                            if(j>width-1||j-offset<0)
                                 continue;
                             for (int c = 0; c < in1.channels();++c)
                             {
@@ -628,13 +652,13 @@ Mat ASW(Mat in1, Mat in2, string type)
                     }
                     for (int i = y-kernel_size+1; i <= y+ kernel_size; i+=2)
                     {
-                        if(i<0||i>height)
+                        if(i<0||i>height-1)
                             continue;
                         for (int j = x-kernel_size+1; j <= x+kernel_size; j+=2)
                         {
                             float e = 0;
                             double delta_c1=0, delta_c2=0;
-                            if(j<0||j>width||j-offset<0)
+                            if(j>width-1||j-offset<0)
                                 continue;
                             for (int c = 0; c < in1.channels();++c)
                             {
@@ -661,13 +685,17 @@ Mat ASW(Mat in1, Mat in2, string type)
                         }
                     }
 
+
                     E = sum_e/denominator;
                     pair<double,int> offset_e ;
                     offset_e = std::make_pair(E,offset);
                     value_asw_left[y][x].push_back(offset_e);
-
+//                    if(offset==max_offset)
+//                        std::sort(value_asw_left[y][x].begin(),value_asw_left[y][x].end(),best_to_bad_ordering);
                     if(offset==max_offset||x-offset==0)
                     {
+                        if(y==11&&x==121)
+                            int u =0;
                         std::sort(value_asw_left[y][x].begin(),value_asw_left[y][x].end(),best_to_bad_ordering);
 
                         depth.at<uchar>(y, x) = (uchar)(value_asw_left[y][x][0].second);
@@ -680,7 +708,7 @@ Mat ASW(Mat in1, Mat in2, string type)
                                 sum+=fabs(in1.at<Vec3b>(y, x)[c] - in2.at<Vec3b>(y, x-offset_num)[c]);
 
                             }
-                            if(sum/3 <= 30)
+                            if(sum/3 <= 25&&value_asw_left[y][x][i].first-value_asw_left[y][x][0].first<50)
                             {
                                 depth.at<uchar>(y, x) = (uchar)(offset_num);
                                 break;
@@ -692,12 +720,12 @@ Mat ASW(Mat in1, Mat in2, string type)
 
 
 
-                    /*if (E < min_asw_left[y][x])
-                    {
-                        min_asw_left[y][x] = E;
-
-                        depth.at<uchar>(y, x) = (uchar)(offset);
-                    }*/
+//                    if (E < min_asw_left[y][x])
+//                    {
+//                        min_asw_left[y][x] = E;
+//
+//                        depth.at<uchar>(y, x) = (uchar)(offset);
+//                    }
                 }
 
             }
@@ -705,6 +733,7 @@ Mat ASW(Mat in1, Mat in2, string type)
         }
 
     cout << "初步计算时间：" << (clock() - timest) / (double)CLOCKS_PER_SEC << endl;
+
 
 
 
@@ -718,7 +747,7 @@ Mat ASW(Mat in1, Mat in2, string type)
 
             for (int offset = 0; offset <= max_offset; offset++)
             {
-                if(x+offset<0)
+                if(x+offset>width-1)
                     continue;
                 double sum_e = 0;
 
@@ -729,13 +758,13 @@ Mat ASW(Mat in1, Mat in2, string type)
 
                 for (int i = y-kernel_size; i <= y+ kernel_size; i+=2)
                 {
-                    if(i<0||i>height)
+                    if(i<0||i>height-1)
                         continue;
                     for (int j = x-kernel_size; j <= x+kernel_size; j+=2)
                     {
                         float e = 0;
                         double delta_c1=0, delta_c2=0;
-                        if(j<0||j>width||j+offset>width)
+                        if(j<0||j+offset>width-1)
                             continue;
                         for (int c = 0; c < in1.channels();++c)
                         {
@@ -762,13 +791,13 @@ Mat ASW(Mat in1, Mat in2, string type)
                 }
                 for (int i = y-kernel_size+1; i <= y+ kernel_size; i+=2)
                 {
-                    if(i<0||i>height)
+                    if(i<0||i>height-1)
                         continue;
                     for (int j = x-kernel_size+1; j <= x+kernel_size; j+=2)
                     {
                         float e = 0;
                         double delta_c1=0, delta_c2=0;
-                        if(j<0||j>width||j+offset<width)
+                        if(j<0||j+offset>width-1)
                             continue;
                         for (int c = 0; c < in1.channels();++c)
                         {
@@ -794,16 +823,19 @@ Mat ASW(Mat in1, Mat in2, string type)
                     }
                 }
                 E = sum_e/denominator;
+                if(x==302)
+                    int u =0;
 
                 pair<double,int> offset_e ;
                 offset_e = std::make_pair(E,offset);
                 value_asw_right[y][x].push_back(offset_e);
-                if(offset==max_offset||x==max_offset)
+                if(offset==max_offset||x+offset==width-1)
                 {
+
                     std::sort(value_asw_right[y][x].begin(),value_asw_right[y][x].end(),best_to_bad_ordering);
 
                     depth_right.at<uchar>(y, x) = (uchar)(value_asw_right[y][x][0].second);
-                    for(int i=0;i<5&&i<=x;i++)
+                    for(int i=0;i<5&&i<=width-1-x;i++)
                     {
                         int offset_num =  value_asw_right[y][x][i].second;
                         double sum=0;
@@ -812,7 +844,7 @@ Mat ASW(Mat in1, Mat in2, string type)
                             sum+=fabs(in2.at<Vec3b>(y, x)[c] - in1.at<Vec3b>(y, x+offset_num)[c]);
 
                         }
-                        if(sum/3 <= 30)
+                        if(sum/3 <= 25&&value_asw_left[y][x][i].first-value_asw_left[y][x][0].first<50)
                         {
                             depth_right.at<uchar>(y, x) = (uchar)(offset_num);
                             break;
@@ -822,12 +854,12 @@ Mat ASW(Mat in1, Mat in2, string type)
 
                 }
 
-                /*if (E < min_asw_right[y][x])
-                {
-                    min_asw_right[y][x] = E;
-
-                    depth_right.at<uchar>(y, x) = (uchar)(offset);
-                }*/
+//                if (E < min_asw_right[y][x])
+//                {
+//                    min_asw_right[y][x] = E;
+//
+//                    depth_right.at<uchar>(y, x) = (uchar)(offset);
+//                }
             }
 
         }
@@ -839,6 +871,47 @@ Mat ASW(Mat in1, Mat in2, string type)
     cout << "一致性检测计算时间：" << (clock() - timest_check) / (double)CLOCKS_PER_SEC << endl;
 
     imwrite("/home/quinlan/Learn/StereoMatch/dataset/error_depth.png", depth_err);
+    imwrite("/home/quinlan/Learn/StereoMatch/dataset/initial.png", depth);
+
+
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; ++x)
+        {
+            if(depth_err.at<uchar>(y,x)!=0)
+                continue;
+            int l = -1;
+            for (int i = x; i >= 0 ; --i)
+            {
+                if(depth_err.at<uchar>(y,i)!=0)
+                {
+                    l = depth.at<uchar>(y,i);
+                    break;
+                }
+
+            }
+            int r = -1;
+            for (int i = x; i < width ; ++i)
+            {
+                if(depth_err.at<uchar>(y,i)!=0)
+                {
+                    r = depth.at<uchar>(y,i);
+                    break;
+                }
+            }
+            if(l!= (-1) && r!= (-1))
+            {
+                depth.at<uchar>(y,x) = (l < r ?l:r);
+            }
+            else if(l== -1)
+            {
+                depth.at<uchar>(y,x) = r;
+            }
+            else
+                depth.at<uchar>(y,x) = l;
+
+        }
+    }
 
     return depth;
 }
@@ -1009,7 +1082,7 @@ Mat ncc(Mat in1, Mat in2, string type, bool add_constant = false)
     return depth;
 }
 
-// Adaptive Support Window
+
 Mat
 asw(Mat in1, Mat in2, string type)
 {

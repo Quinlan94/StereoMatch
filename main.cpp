@@ -113,6 +113,7 @@ int  main()
 
 
 
+
             //创建窗口
 /*
          namedWindow("【效果图窗口】", 1);
@@ -129,7 +130,7 @@ int  main()
 
 
 
-        string disp1_name = "/home/quinlan/Learn/StereoMatch/dataset/asw-ArtL-1原图.png";
+        string disp1_name = "/home/quinlan/Learn/StereoMatch/dataset/optimal.png";
         //string disp5_name = "C:/Users/Administrator/Desktop/DA/dataset/disp_row3col3.png";
 
         cout << "creating " << disp1_name << endl;
