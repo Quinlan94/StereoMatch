@@ -4,11 +4,6 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <opencv2/xfeatures2d.hpp>
-#include<opencv2/highgui/highgui.hpp>
-#include <opencv2/xfeatures2d/nonfree.hpp>
-
-#include "opencv2/core/core.hpp"
-#include "opencv2/features2d/features2d.hpp"
 
 #include <string>
 #include <ctime>
@@ -128,12 +123,31 @@ int  main()
         on_trackbars(thresh_1,0);
 */
 
+    /*Mat test = imread("/home/quinlan/Learn/StereoMatch/dataset/initial.png",0);
+    Mat test_err = imread("/home/quinlan/Learn/StereoMatch/dataset/error_depth.png",0);
+    int height = test.size().height;
+    int width = test.size().width;
+    Mat test_1(test.size().height, test.size().width, CV_8UC1);
+    Mat test_err_1(test.size().height, test.size().width, CV_8UC1);
+    for (int y = 0; y < height; ++y)
+        for (int x = 0; x < width; ++x)
+        {
+            test_1.at<uchar>(y,x) = test.at<uchar>(y,x);
+            test_err_1.at<uchar>(y,x) = test_err.at<uchar>(y,x);
+        }
+*/
+
+
 
 
         string disp1_name = "/home/quinlan/Learn/StereoMatch/dataset/optimal.png";
-        //string disp5_name = "C:/Users/Administrator/Desktop/DA/dataset/disp_row3col3.png";
 
-        cout << "creating " << disp1_name << endl;
+
+
+    /*imwrite("/home/quinlan/Learn/StereoMatch/dataset/shit_abs_disp.png", test_1);
+    normalize(test_1, test_1, 0, 255, NORM_MINMAX, CV_8UC1);
+    imshow("tu", test_1);
+    imwrite("/home/quinlan/Learn/StereoMatch/dataset/shit.png", test_1);*/
 
         Mat disp = ASW(left, right, "left");
 

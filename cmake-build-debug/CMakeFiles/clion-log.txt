@@ -1,4 +1,0 @@
-/home/quinlan/software/clion-2017.3.4/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/quinlan/Learn/StereoMatch
--- Configuring done
--- Generating done
--- Build files have been written to: /home/quinlan/Learn/StereoMatch/cmake-build-debug

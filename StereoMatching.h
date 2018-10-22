@@ -14,6 +14,9 @@ using namespace std;
 using namespace cv;
 int max_offset = 64;
 int kernel_size = 5; // window size
+int fliter_size = 3;
+
+
 
 Mat
 bgr_to_grey(const Mat& bgr)
@@ -198,6 +201,121 @@ Mat CheckDepth(const Mat &depth_left,const Mat &depth_right)
     return  depth_err;
 
 }
+
+void fliter_err(Mat & depth,Mat in1,int num_iter)
+{
+    int width = depth.size().width;
+    int height = depth.size().height;
+
+
+
+    for (int l = 0; l < num_iter ; ++l)
+    {
+        Mat depth_temp = depth.clone();
+
+
+        for (int y = 0; y < height; ++y)
+        {
+            for (int x = 0; x < width; ++x)
+            {
+               /* if(depth_err.at<uchar>(y, x)!=0)
+                    continue;*/
+
+                int Num = 0;
+                std::vector<uchar> num_offset;
+                std::set<uchar> one_offset;
+
+                for (int i = y - fliter_size; i <= y + fliter_size; i++)
+                {
+                    if (i < 0 || i > height - 1)
+                        continue;
+
+                    for (int j = x - fliter_size; j <= x + fliter_size; j++)
+                    {
+                        if(y==131&&x==133)
+                            int g =0;
+                        if (j > width - 1 || j < 0)
+                            continue;
+
+                        double sum = 0;
+                        for (int c = 0; c < in1.channels(); ++c) {
+                            sum += fabs(in1.at<Vec3b>(i, j)[c] - in1.at<Vec3b>(y, x)[c]);
+
+                        }
+                        if (sum / 3 < 10) {
+                            num_offset.push_back(depth.at<uchar>(i, j));
+                            one_offset.insert(depth.at<uchar>(i, j));
+                        }
+                    }
+                }
+
+
+                if (num_offset.size() == 0)
+                    continue;
+                set<uchar>::iterator k = one_offset.begin();
+                for (; k != one_offset.end(); ++k)
+                {
+                    int freq = count(num_offset.begin(), num_offset.end(), *k);
+                    if (freq > Num)
+                    {
+                        Num = freq;
+                        depth_temp.at<uchar>(y, x) = *k;
+
+                    }
+
+                }
+            }
+        }
+        depth = depth_temp;
+
+    }
+
+
+}
+
+void consistent_check(int width, int height, Mat &depth, Mat depth_err)
+{
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; ++x)
+        {
+            if(depth_err.at<uchar>(y,x)!=0)
+                continue;
+            int l = -1;
+            for (int i = x; i >= 0 ; --i)
+            {
+                if(depth_err.at<uchar>(y,i)!=0)
+                {
+                    l = depth.at<uchar>(y,i);
+                    break;
+                }
+
+            }
+            int r = -1;
+            for (int i = x; i < width ; ++i)
+            {
+                if(depth_err.at<uchar>(y,i)!=0)
+                {
+                    r = depth.at<uchar>(y,i);
+                    break;
+                }
+            }
+            if(l!= (-1) && r!= (-1))
+            {
+                depth.at<uchar>(y,x) = (l < r ?l:r);
+            }
+            else if(l== -1)
+            {
+                depth.at<uchar>(y,x) = r;
+            }
+            else
+                depth.at<uchar>(y,x) = l;
+
+        }
+    }
+}
+
+
 Mat ncc_improve(Mat in1, Mat in2, string type, bool add_constant = false)
 {
     int width = in1.size().width;
@@ -476,6 +594,8 @@ Mat ncc_improve(Mat in1, Mat in2, string type, bool add_constant = false)
 }
 
 
+
+
 Mat ASW(Mat in1, Mat in2, string type)
 {
 
@@ -614,7 +734,7 @@ Mat ASW(Mat in1, Mat in2, string type)
 
                     float sum_e = 0;
                     double E=0;
-                    double numerator = 0;
+
                     double denominator = 0;
 
                     for (int i = y-kernel_size; i <= y+ kernel_size; i+=2)
@@ -733,6 +853,11 @@ Mat ASW(Mat in1, Mat in2, string type)
         }
 
     cout << "初步计算时间：" << (clock() - timest) / (double)CLOCKS_PER_SEC << endl;
+    //normalize(depth, depth, 0, 255, NORM_MINMAX, CV_8UC1);
+    imwrite("/home/quinlan/Learn/StereoMatch/dataset/initial.png", depth);
+    fliter_err(depth,in1,3);
+
+
 
 
 
@@ -867,54 +992,27 @@ Mat ASW(Mat in1, Mat in2, string type)
     }
 
 
-    depth_err = CheckDepth(depth,depth_right);
+
     cout << "一致性检测计算时间：" << (clock() - timest_check) / (double)CLOCKS_PER_SEC << endl;
 
+
+
+
+
+    fliter_err(depth_right,in2,3);
+    depth_err = CheckDepth(depth,depth_right);
     imwrite("/home/quinlan/Learn/StereoMatch/dataset/error_depth.png", depth_err);
-    imwrite("/home/quinlan/Learn/StereoMatch/dataset/initial.png", depth);
 
 
-    for (int y = 0; y < height; ++y)
-    {
-        for (int x = 0; x < width; ++x)
-        {
-            if(depth_err.at<uchar>(y,x)!=0)
-                continue;
-            int l = -1;
-            for (int i = x; i >= 0 ; --i)
-            {
-                if(depth_err.at<uchar>(y,i)!=0)
-                {
-                    l = depth.at<uchar>(y,i);
-                    break;
-                }
+    clock_t time_fliter = clock();
 
-            }
-            int r = -1;
-            for (int i = x; i < width ; ++i)
-            {
-                if(depth_err.at<uchar>(y,i)!=0)
-                {
-                    r = depth.at<uchar>(y,i);
-                    break;
-                }
-            }
-            if(l!= (-1) && r!= (-1))
-            {
-                depth.at<uchar>(y,x) = (l < r ?l:r);
-            }
-            else if(l== -1)
-            {
-                depth.at<uchar>(y,x) = r;
-            }
-            else
-                depth.at<uchar>(y,x) = l;
-
-        }
-    }
+    consistent_check(width, height, depth, depth_err);
+    cout << "优化计算时间：" << (clock() - time_fliter) / (double)CLOCKS_PER_SEC << endl;
 
     return depth;
 }
+
+
 
 Mat ncc(Mat in1, Mat in2, string type, bool add_constant = false)
 {
