@@ -12,7 +12,7 @@
 
 using namespace std;
 using namespace cv;
-int max_offset = 64;
+int max_offset = 128;
 int kernel_size = 5; // window size
 int fliter_size = 3;
 
@@ -252,7 +252,11 @@ void fliter_err(Mat & depth,Mat in1,int num_iter)
 
                 if (num_offset.size() == 0)
                     continue;
+//                std::sort(num_offset.begin(),num_offset.end());
+//                int median_num = num_offset.size()/2;
+//                depth_temp.at<uchar>(y, x) = num_offset[median_num];
                 set<uchar>::iterator k = one_offset.begin();
+
                 for (; k != one_offset.end(); ++k)
                 {
                     int freq = count(num_offset.begin(), num_offset.end(), *k);
@@ -272,6 +276,83 @@ void fliter_err(Mat & depth,Mat in1,int num_iter)
 
 
 }
+void fliter_err(Mat & depth,Mat &depth_err,Mat in1,int num_iter)
+{
+    int width = depth.size().width;
+    int height = depth.size().height;
+
+
+
+    for (int l = 0; l < num_iter ; ++l)
+    {
+        Mat depth_temp = depth.clone();
+        Mat depth_err_temp = depth_err.clone();
+
+
+        for (int y = 0; y < height; ++y)
+        {
+            for (int x = 0; x < width; ++x)
+            {
+//                 if(depth_err.at<uchar>(y, x)!=0)
+//                     continue;
+
+                int Num = 0;
+                std::vector<uchar> num_offset;
+                std::set<uchar> one_offset;
+
+                for (int i = y - fliter_size; i <= y + fliter_size; i++)
+                {
+                    if (i < 0 || i > height - 1)
+                        continue;
+
+                    for (int j = x - fliter_size; j <= x + fliter_size; j++)
+                    {
+
+                        if (j > width - 1 || j < 0)
+                            continue;
+
+                        double sum = 0;
+                        for (int c = 0; c < in1.channels(); ++c) {
+                            sum += fabs(in1.at<Vec3b>(i, j)[c] - in1.at<Vec3b>(y, x)[c]);
+
+                        }
+                        if (sum / 3 < 15) {
+                            num_offset.push_back(depth.at<uchar>(i, j));
+                            one_offset.insert(depth.at<uchar>(i, j));
+                        }
+                    }
+                }
+                if(y==41&&x==114)
+                    int g =0;
+
+                if (num_offset.size() == 0)
+                    continue;
+                set<uchar>::iterator k = one_offset.begin();
+                                std::sort(num_offset.begin(),num_offset.end());
+                int median_num = (int)num_offset.size()/2;
+                depth_temp.at<uchar>(y, x) = num_offset[median_num];
+//                for (; k != one_offset.end(); ++k)
+//                {
+//                    int freq = count(num_offset.begin(), num_offset.end(), *k);
+//                    if (freq > Num)
+//                    {
+//                        Num = freq;
+//                        depth_temp.at<uchar>(y, x) = *k;
+//                        //depth_err_temp.at<uchar>(y, x) = 255;
+//
+//                    }
+//
+//                }
+            }
+        }
+        depth = depth_temp;
+        depth_err = depth_err_temp;
+
+    }
+
+
+}
+
 
 void consistent_check(int width, int height, Mat &depth, Mat depth_err)
 {
@@ -315,283 +396,6 @@ void consistent_check(int width, int height, Mat &depth, Mat depth_err)
     }
 }
 
-
-Mat ncc_improve(Mat in1, Mat in2, string type, bool add_constant = false)
-{
-    int width = in1.size().width;
-    int height = in1.size().height;
-
-
-
-    Mat left = bgr_to_grey(in1);
-    Mat right = bgr_to_grey(in2);
-    clock_t timest = clock();
-    vector<Mat> left_cost = getAmpAndAngle(in1,0);
-    vector<Mat> right_cost = getAmpAndAngle(in1,0);
-    cout << "梯度和角度计算时间：" << (clock() - timest) / (double)CLOCKS_PER_SEC << endl;
-
-    int p =left_cost[0].at<Vec3b>(0,1)[2];
-
-    if (add_constant)
-    {
-        right += 10;
-    }
-
-    Mat depth(height, width, 0);
-    vector< vector<double> > max_ncc; // store max NCC value
-
-    for (int i = 0; i < height; ++i)
-    {
-        vector<double> tmp(width, -2);
-        max_ncc.push_back(tmp);
-    }
-
-    /*for (int offset = 1; offset <= max_offset; offset++)
-    {
-        Mat tmp(height, width, 0);
-        // shift image depend on type to save calculation time
-        if (type == "left")
-        {
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < offset; x++)
-                {
-                    //tmp.at<uchar>(y, x) = right.at<uchar>(y, x);
-                    tmp.at<uchar>(y, x) = right_cost[0].at<uchar>(y, x);
-                }
-
-                for (int x = offset; x < width; x++)
-                {
-                    //tmp.at<uchar>(y, x) = right.at<uchar>(y, x - offset);
-                    tmp.at<uchar>(y, x) = right_cost[0].at<uchar>(y, x - offset);
-                }
-            }
-        }
-        else if (type == "right")
-        {
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width - offset; x++)
-                {
-                    tmp.at<uchar>(y, x) = left.at<uchar>(y, x + offset);
-                }
-
-                for (int x = width - offset; x < width; x++)
-                {
-                    tmp.at<uchar>(y, x) = left.at<uchar>(y, x);
-                }
-            }
-        }
-        else {
-            Mat tmp(0, 0, 0);
-            return tmp;
-        }
-
-        // calculate each pixel's NCC value
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                int start_x = max(0, x - kernel_size);
-                int start_y = max(0, y - kernel_size);
-                int end_x = min(width - 1, x + kernel_size);
-                int end_y = min(height - 1, y + kernel_size);
-                double n = (end_y - start_y) * (end_x - start_x);
-                double res_ncc = 0;
-
-                if (type == "left")
-                {
-                    double left_mean = 0, right_mean = 0;
-                    double left_std = 0, right_std = 0;
-                    double numerator = 0;
-
-                    for (int i = start_y; i <= end_y; i++)
-                    {
-                        for (int j = start_x; j <= end_x; j++)
-                        {
-//                            left_mean += left.at<uchar>(i, j);
-//                            right_mean += tmp.at<uchar>(i, j);
-
-                            left_mean += left_cost[0].at<uchar>(i, j);
-                            right_mean += tmp.at<uchar>(i, j);
-                        }
-                    }
-
-                    left_mean /= n;
-                    right_mean /= n;
-
-                    for (int i = start_y; i <= end_y; i++)
-                    {
-                        for (int j = start_x; j <= end_x; j++)
-                        {
-//                            left_std += pow(left.at<uchar>(i, j) - left_mean, 2);
-//                            right_std += pow(tmp.at<uchar>(i, j) - right_mean, 2);
-//                            numerator += (left.at<uchar>(i, j) - left_mean) * (tmp.at<uchar>(i, j) - right_mean);
-
-                            left_std += pow(left_cost[0].at<uchar>(i, j) - left_mean, 2);
-                            right_std += pow(tmp.at<uchar>(i, j) - right_mean, 2);
-                            numerator +=
-                                    (left_cost[0].at<uchar>(i, j) - left_mean) * (tmp.at<uchar>(i, j) - right_mean);
-                        }
-                    }
-
-                    numerator /= n;
-                    left_std /= n;
-                    right_std /= n;
-                    res_ncc = numerator / (sqrt(left_std) * sqrt(right_std)) / n;
-                }
-                else
-                {
-                    double left_mean = 0, right_mean = 0;
-                    double left_std = 0, right_std = 0;
-                    double numerator = 0;
-
-                    for (int i = start_y; i <= end_y; i++)
-                    {
-                        for (int j = start_x; j <= end_x; j++)
-                        {
-                            left_mean += tmp.at<uchar>(i, j);
-                            right_mean += right.at<uchar>(i, j);
-                        }
-                    }
-
-                    left_mean /= n;
-                    right_mean /= n;
-
-                    for (int i = start_y; i <= end_y; i++)
-                    {
-                        for (int j = start_x; j <= end_x; j++)
-                        {
-                            left_std += pow(tmp.at<uchar>(i, j) - left_mean, 2);
-                            right_std += pow(right.at<uchar>(i, j) - right_mean, 2);
-                            numerator += (tmp.at<uchar>(i, j) - left_mean) * (right.at<uchar>(i, j) - right_mean);
-                        }
-                    }
-
-                    numerator /= n;
-                    left_std /= n;
-                    right_std /= n;
-                    res_ncc = numerator / (sqrt(left_std) * sqrt(right_std)) / n;
-
-                }
-                if (res_ncc > max_ncc[y][x])
-                {
-                    max_ncc[y][x] = res_ncc;
-
-                    depth.at<uchar>(y, x) = (uchar)(offset);
-                }
-            }
-        }
-    }*/
-    for (int y = 0; y < height; y++)
-    {
-
-        for (int x = 0; x < width; x++)
-        {
-
-            for (int offset = 1; offset <= max_offset; offset++)
-            {
-
-                if(x-offset<0)
-                    continue;
-//                double left_mean = 0, right_mean = 0;
-//                double left_std = 0, right_std= 0;
-//                double numerator = 0;
-//                double res_ncc = 0;
-
-                double left_mean[3]={0,0,0}, right_mean[3]={0,0,0};
-                double left_std[3]={0,0,0}, right_std[3]={0,0,0};
-                double numerator[3]={0,0,0};
-                double res_ncc[3]={0,0,0};
-
-
-                double res_ncc_mean = 0;
-                int n = 0;
-
-
-                for (int i = y-kernel_size; i <= y+ kernel_size; i++)
-                {
-                    if(i<0||i>height)
-                        continue;
-                    for (int j = x-kernel_size; j <= x+kernel_size; j++)
-                    {
-                        if(j<0||j>width||(j-offset<0))
-                            continue;
-                        for (int c = 0; c < in1.channels();++c)
-                        {
-
-                            n++;
-                            left_mean[c]+= in1.at<Vec3b>(i,j)[c];
-                            right_mean[c]+= in2.at<Vec3b>(i,j-offset)[c];
-
-                           /* left_mean[c]+= left_cost[0].at<float>(i, j);
-
-                            right_mean[c]+= right_cost[0].at<float>(i, j-offset);*/
-
-                        }
-
-                    }
-                }
-
-                for (int c = 0; c < in1.channels();++c)
-                {
-                    left_mean[c]= left_mean[c]/n;
-                    right_mean[c]= right_mean[c]/n;
-                }
-
-
-                for (int i = y-kernel_size; i <= y+ kernel_size; i++)
-                {
-                    if(i<0||i>height)
-                        continue;
-                    for (int j = x-kernel_size; j <= x+kernel_size; j++)
-                    {
-                        if(j<0||j>width)
-                            continue;
-                        for (int c = 0; c < in1.channels();++c)
-                        {
-                            left_std[c]+= pow(in1.at<Vec3b>(i, j)[c]- left_mean[c], 2);
-                            right_std[c] += pow(in2.at<Vec3b>(i, j-offset)[c] - right_mean[c], 2);
-                            numerator[c] += (in1.at<Vec3b>(i, j)[c] - left_mean[c]) * (in2.at<Vec3b>(i, j-offset)[c] - right_mean[c]);
-
-                        }
-
-                    }
-                }
-
-
-                for (int c = 0; c < in1.channels();++c)
-                {
-                    numerator[c]/= n;
-                    left_std[c] /= n;
-                    right_std[c] /= n;
-                    res_ncc[c] = numerator[c]/ (sqrt(left_std[c]) * sqrt(right_std[c])) / n;
-
-                }
-
-
-
-                res_ncc_mean = (res_ncc[0]+res_ncc[1]+res_ncc[2])/3;
-
-                if (res_ncc_mean > max_ncc[y][x])
-                {
-                    max_ncc[y][x] = res_ncc_mean;
-
-                    depth.at<uchar>(y, x) = (uchar)(offset);
-                }
-            }
-
-        }
-
-    }
-
-
-
-
-
-
-    return depth;
-}
 
 
 
@@ -810,8 +614,7 @@ Mat ASW(Mat in1, Mat in2, string type)
                     pair<double,int> offset_e ;
                     offset_e = std::make_pair(E,offset);
                     value_asw_left[y][x].push_back(offset_e);
-//                    if(offset==max_offset)
-//                        std::sort(value_asw_left[y][x].begin(),value_asw_left[y][x].end(),best_to_bad_ordering);
+
                     if(offset==max_offset||x-offset==0)
                     {
                         if(y==11&&x==121)
@@ -839,13 +642,6 @@ Mat ASW(Mat in1, Mat in2, string type)
                     }
 
 
-
-//                    if (E < min_asw_left[y][x])
-//                    {
-//                        min_asw_left[y][x] = E;
-//
-//                        depth.at<uchar>(y, x) = (uchar)(offset);
-//                    }
                 }
 
             }
@@ -948,8 +744,7 @@ Mat ASW(Mat in1, Mat in2, string type)
                     }
                 }
                 E = sum_e/denominator;
-                if(x==302)
-                    int u =0;
+
 
                 pair<double,int> offset_e ;
                 offset_e = std::make_pair(E,offset);
@@ -1005,312 +800,14 @@ Mat ASW(Mat in1, Mat in2, string type)
 
 
     clock_t time_fliter = clock();
+    //fliter_err(depth,depth_err,in1,1);
 
     consistent_check(width, height, depth, depth_err);
+
+    medianBlur(depth,depth,3);
+
     cout << "优化计算时间：" << (clock() - time_fliter) / (double)CLOCKS_PER_SEC << endl;
 
     return depth;
 }
 
-
-
-Mat ncc(Mat in1, Mat in2, string type, bool add_constant = false)
-{
-    int width = in1.size().width;
-    int height = in1.size().height;
-
-
-    Mat left = bgr_to_grey(in1);
-    Mat right = bgr_to_grey(in2);
-
-    if (add_constant)
-    {
-        right += 10;
-    }
-
-    Mat depth(height, width, 0);
-    vector< vector<double> > max_ncc; // store max NCC value
-
-    for (int i = 0; i < height; ++i)
-    {
-        vector<double> tmp(width, -2);
-        max_ncc.push_back(tmp);
-    }
-
-    for (int offset = 1; offset <= max_offset; offset++)
-    {
-        Mat tmp(height, width, 0);
-        // shift image depend on type to save calculation time
-        if (type == "left")
-        {
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < offset; x++)
-                {
-                    tmp.at<uchar>(y, x) = right.at<uchar>(y, x);
-                }
-
-                for (int x = offset; x < width; x++)
-                {
-                    tmp.at<uchar>(y, x) = right.at<uchar>(y, x - offset);
-                }
-            }
-        }
-        else if (type == "right")
-        {
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width - offset; x++)
-                {
-                    tmp.at<uchar>(y, x) = left.at<uchar>(y, x + offset);
-                }
-
-                for (int x = width - offset; x < width; x++)
-                {
-                    tmp.at<uchar>(y, x) = left.at<uchar>(y, x);
-                }
-            }
-        }
-        else
-        {
-            Mat tmp(0, 0, 0);
-            return tmp;
-        }
-
-        // calculate each pixel's NCC value
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                int start_x = max(0, x - kernel_size);
-                int start_y = max(0, y - kernel_size);
-                int end_x = min(width - 1, x + kernel_size);
-                int end_y = min(height - 1, y + kernel_size);
-                double n = (end_y - start_y) * (end_x - start_x);
-               // int n = 0;
-                double res_ncc = 0;
-
-                if(y==52&&x==86&&offset==20)
-                    int k = 0;
-
-                if (type == "left")
-                {
-                    double left_mean = 0, right_mean = 0;
-                    double left_std = 0, right_std = 0;
-                    double numerator = 0;
-
-                    for (int i = start_y; i <= end_y; i++)
-                    {
-                        for (int j = start_x; j <= end_x; j++)
-                        {
-
-                            int l = left.at<uchar>(i, j);
-                            left_mean += left.at<uchar>(i, j);
-                            int r = tmp.at<uchar>(i, j);
-                            right_mean += tmp.at<uchar>(i, j);
-
-                        }
-                    }
-
-                    left_mean /= n;
-                    right_mean /= n;
-
-                    for (int i = start_y; i <= end_y; i++)
-                    {
-                        for (int j = start_x; j <= end_x; j++)
-                        {
-                            left_std += pow(left.at<uchar>(i, j) - left_mean, 2);
-                            right_std += pow(tmp.at<uchar>(i, j) - right_mean, 2);
-                            numerator += (left.at<uchar>(i, j) - left_mean) * (tmp.at<uchar>(i, j) - right_mean);
-                        }
-                    }
-
-                    numerator /= n;
-                    left_std /= n;
-                    right_std /= n;
-                    res_ncc = numerator / (sqrt(left_std) * sqrt(right_std)) / n;
-                }
-                else
-                {
-                    double left_mean = 0, right_mean = 0;
-                    double left_std = 0, right_std = 0;
-                    double numerator = 0;
-
-                    for (int i = start_y; i <= end_y; i++)
-                    {
-                        for (int j = start_x; j <= end_x; j++)
-                        {
-                            left_mean += tmp.at<uchar>(i, j);
-                            right_mean += right.at<uchar>(i, j);
-                        }
-                    }
-
-                    left_mean /= n;
-                    right_mean /= n;
-
-                    for (int i = start_y; i <= end_y; i++)
-                    {
-                        for (int j = start_x; j <= end_x; j++)
-                        {
-                            left_std += pow(tmp.at<uchar>(i, j) - left_mean, 2);
-                            right_std += pow(right.at<uchar>(i, j) - right_mean, 2);
-                            numerator += (tmp.at<uchar>(i, j) - left_mean) * (right.at<uchar>(i, j) - right_mean);
-                        }
-                    }
-
-                    numerator /= n;
-                    left_std /= n;
-                    right_std /= n;
-                    res_ncc = numerator / (sqrt(left_std) * sqrt(right_std)) / n;
-                }
-
-                // greater NCC value found
-                if (res_ncc > max_ncc[y][x])
-                {
-
-                    max_ncc[y][x] = res_ncc;
-                    // for better visualization
-                    depth.at<uchar>(y, x) = (uchar)(offset);
-                }
-            }
-        }
-    }
-
-
-    return depth;
-}
-
-
-Mat
-asw(Mat in1, Mat in2, string type)
-{
-    int width = in1.size().width;
-    int height = in1.size().height;
-
-
-
-    double k = 3, gamma_c = 7, gamma_g = 36; // ASW parameters
-
-    Mat depth(height, width, 0);
-    vector< vector<double> > min_asw; // store min ASW value
-
-
-    Mat left = bgr_to_grey(in1);
-    Mat right = bgr_to_grey(in2);
-
-    for (int i = 0; i < height; ++i)
-    {
-        vector<double> tmp(width, numeric_limits<double>::max());
-        min_asw.push_back(tmp);
-    }
-
-    for (int offset = 1; offset <= max_offset; offset++)
-    {
-        Mat tmp(height, width, 0);
-        // shift image depend on type to save calculation time
-        if (type == "left")
-        {
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < offset; x++)
-                {
-                    tmp.at<uchar>(y, x) = right.at<uchar>(y, x);
-                }
-
-                for (int x = offset; x < width; x++)
-                {
-                    tmp.at<uchar>(y, x) = right.at<uchar>(y, x - offset);
-                }
-            }
-        }
-        else if (type == "right")
-        {
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width - offset; x++)
-                {
-                    tmp.at<uchar>(y, x) = left.at<uchar>(y, x + offset);
-                }
-
-                for (int x = width - offset; x < width; x++)
-                {
-                    tmp.at<uchar>(y, x) = left.at<uchar>(y, x);
-                }
-            }
-        }
-        else
-        {
-            Mat tmp(0, 0, 0);
-            return tmp;
-        }
-
-        // calculate each pixel's ASW value
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-
-                int start_x = max(0, x - kernel_size);
-                int start_y = max(0, y - kernel_size);
-                int end_x = min(width - 1, x + kernel_size);
-                int end_y = min(height - 1, y + kernel_size);
-                double E = 0;
-
-                if (type == "left")
-                {
-                    double numerator = 0;
-                    double denominator = 0;
-
-                    for (int i = start_y; i <= end_y; i++)
-                    {
-                        for (int j = start_x; j <= end_x; j++)
-                        {
-                            double delta_c1 = fabs(left.at<uchar>(i, j) - left.at<uchar>(y, x));
-                            double delta_c2 = fabs(tmp.at<uchar>(i, j) - tmp.at<uchar>(y, x));
-                            double delta_g = sqrt((i - y) * (i - y) + (j - x) * (j - x));
-                            double w1 = k * exp(-(delta_c1 / gamma_c + delta_g / gamma_g));
-                            double w2 = k * exp(-(delta_c2 / gamma_c + delta_g / gamma_g));
-
-
-                            numerator += w1 * w2 * fabs(left.at<uchar>(i, j) - tmp.at<uchar>(i, j));
-                            denominator += w1 * w2;
-                        }
-                    }
-
-                    E = numerator / denominator;
-                }
-                else
-                {
-                    double numerator = 0;
-                    double denominator = 0;
-
-                    for (int i = start_y; i <= end_y; i++)
-                    {
-                        for (int j = start_x; j <= end_x; j++)
-                        {
-                            double delta_c1 = fabs(right.at<uchar>(i, j) - right.at<uchar>(y, x));
-                            double delta_c2 = fabs(tmp.at<uchar>(i, j) - tmp.at<uchar>(y, x));
-                            double delta_g = sqrt((i - y) * (i - y) + (j - x) * (j - x));
-                            double w1 = k * exp(-(delta_c1 / gamma_c + delta_g / gamma_g));
-                            double w2 = k * exp(-(delta_c2 / gamma_c + delta_g / gamma_g));
-                            numerator += w1 * w2 * fabs(right.at<uchar>(i, j) - tmp.at<uchar>(i, j));
-                            denominator += w1 * w2;
-                        }
-                    }
-
-                    E = numerator / denominator;
-                }
-
-                // smaller ASW found
-                if (E < min_asw[y][x])
-                {
-                    min_asw[y][x] = E;
-                    // for better visualization
-                    depth.at<uchar>(y, x) = (uchar)(offset);
-                }
-            }
-        }
-    }
-
-    return depth;
-}

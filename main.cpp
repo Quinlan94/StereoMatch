@@ -98,57 +98,49 @@ int  main()
     test_image_quality("ASW");
 */
 
-         Mat left_temp = imread("/home/quinlan/桌面/MiddEval3/trainingQ/ArtL/im0.png");
-         Mat right_temp = imread("/home/quinlan/桌面/MiddEval3/trainingQ/ArtL/im1.png");
+         Mat left_temp = imread("/home/quinlan/桌面/MiddEval3/trainingH/ArtL/im0.png");
+         Mat right_temp = imread("/home/quinlan/桌面/MiddEval3/trainingH/ArtL/im1.png");
 
 
-    Mat left,right;
+         Mat left,right;
          GaussianBlur(left_temp,left,Size(3,3),0);
-        GaussianBlur(right_temp,right,Size(3,3),0);
+         GaussianBlur(right_temp,right,Size(3,3),0);
 
 
 
 
-            //创建窗口
-/*
-         namedWindow("【效果图窗口】", 1);
-
-
-         //创建轨迹条
-        createTrackbar("thresh_1：", "【效果图窗口】", &thresh_1, 200,on_trackbars);
 
 
 
-
-        on_trackbars(thresh_1,0);
-*/
-
-    /*Mat test = imread("/home/quinlan/Learn/StereoMatch/dataset/initial.png",0);
+    Mat test = imread("/home/quinlan/Learn/StereoMatch/dataset/initial.png",0);
     Mat test_err = imread("/home/quinlan/Learn/StereoMatch/dataset/error_depth.png",0);
     int height = test.size().height;
     int width = test.size().width;
-    Mat test_1(test.size().height, test.size().width, CV_8UC1);
-    Mat test_err_1(test.size().height, test.size().width, CV_8UC1);
-    for (int y = 0; y < height; ++y)
-        for (int x = 0; x < width; ++x)
-        {
-            test_1.at<uchar>(y,x) = test.at<uchar>(y,x);
-            test_err_1.at<uchar>(y,x) = test_err.at<uchar>(y,x);
-        }
-*/
+//    Mat test_1(test.size().height, test.size().width, CV_8UC1);
+//    Mat test_err_1(test.size().height, test.size().width, CV_8UC1);
+//    for (int y = 0; y < height; ++y)
+//        for (int x = 0; x < width; ++x)
+//        {
+//            test_1.at<uchar>(y,x) = test.at<uchar>(y,x);
+//            test_err_1.at<uchar>(y,x) = test_err.at<uchar>(y,x);
+//        }
+
 
 
 
 
         string disp1_name = "/home/quinlan/Learn/StereoMatch/dataset/optimal.png";
 
+    /*fliter_err(test_1,left,3);
+    consistent_check(width, height, test_1, test_err_1);
+    //fliter_err(test_1,left,3);
+    fliter_err(test_1,test_err_1,left,6);
 
-
-    /*imwrite("/home/quinlan/Learn/StereoMatch/dataset/shit_abs_disp.png", test_1);
+    imwrite("/home/quinlan/Learn/StereoMatch/dataset/shit_abs_disp.png", test_1);
     normalize(test_1, test_1, 0, 255, NORM_MINMAX, CV_8UC1);
     imshow("tu", test_1);
-    imwrite("/home/quinlan/Learn/StereoMatch/dataset/shit.png", test_1);*/
-
+    imwrite("/home/quinlan/Learn/StereoMatch/dataset/shit.png", test_1);
+*/
         Mat disp = ASW(left, right, "left");
 
         imwrite("/home/quinlan/Learn/StereoMatch/dataset/abs_disp.png", disp);
