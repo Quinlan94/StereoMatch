@@ -16,6 +16,8 @@
 
 using namespace std;
 using namespace cv;
+Mat
+asw(Mat in1, Mat in2, string type);
 
 
 Mat bgr_to_grey(const Mat& bgr);
@@ -33,7 +35,7 @@ void fliter_err(Mat & depth,Mat in1,int num_iter);
 
 
 
-void fliter_err(Mat & depth,Mat &depth_err,Mat in1,int num_iter);
+void fliter_err(Mat & depth,Mat &depth_err,Mat in1,vector< vector< vector< pair<double,int> > > > best_arry,int num_iter);
 
 
 

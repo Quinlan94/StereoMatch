@@ -18,9 +18,6 @@ using namespace cv::xfeatures2d;
 
 
 
-int thresh_1 = 3;
-
-cv::Mat left_1;
 void on_trackbars(int , void *);
 
 
@@ -35,13 +32,15 @@ int  main()
 
  
 
-         Mat left_temp = imread("/home/quinlan/桌面/MiddEval3/trainingH/Teddy/im0.png");
-         Mat right_temp = imread("/home/quinlan/桌面/MiddEval3/trainingH/Teddy/im1.png");
+         Mat left_temp = imread("/home/quinlan/桌面/MiddEval3/trainingQ/Recycle/im0.png");
+         Mat right_temp = imread("/home/quinlan/桌面/MiddEval3/trainingQ/Recycle/im1.png");
 
 
          Mat left,right;
-         GaussianBlur(left_temp,left,Size(3,3),0);
+         /*GaussianBlur(left_temp,left,Size(3,3),0);
          GaussianBlur(right_temp,right,Size(3,3),0);
+         bilateralFilter(left_temp,left,20,10,10);
+    bilateralFilter(right_temp,right,20,10,10);*/
 
 
 
@@ -66,7 +65,7 @@ int  main()
 
 
 
-        string disp1_name = "/home/quinlan/Learn/StereoMatch/dataset/optimal_Teddy.png";
+        string disp1_name = "/home/quinlan/Learn/StereoMatch/dataset/optimal_ArtL.png";
 
     /*fliter_err(test_1,left,3);
     consistent_check(width, height, test_1, test_err_1);
@@ -78,10 +77,11 @@ int  main()
     imshow("tu", test_1);
     imwrite("/home/quinlan/Learn/StereoMatch/dataset/shit.png", test_1);
 */
-        Mat disp = ASW(left, right, "left");
-        //Mat disp_right = ASW(right, right, "right");
+        Mat disp = ASW(left_temp, right_temp, "check");
+        //Mat disp = asw(left_temp, right_temp, "left");
 
-        imwrite("/home/quinlan/Learn/StereoMatch/dataset/abs_disp_Teddy.png", disp);
+
+        imwrite("/home/quinlan/Learn/StereoMatch/dataset/abs_disp_ArtL.png", disp);
 
         normalize(disp, disp, 0, 255, NORM_MINMAX, CV_8UC1);
         imshow("tu", disp);
